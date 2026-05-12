@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "motoengine"
+version = "0.1.0"
+description = "MotoEngine project scaffold"
+requires-python = ">=3.10"
+dependencies = [
+  "fastapi>=0.115.0",
+  "uvicorn>=0.30.0",
+  "python-dotenv>=1.0.1",
+  "pydantic-settings>=2.4.0",
+]
