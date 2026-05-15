@@ -1,85 +1,118 @@
 # MotoEngine
 
-MotoEngine 是一个基于 FastAPI 的摩托车维修助手项目。
+MotoEngine 是一个基于 `FastAPI + ChromaDB + DashScope` 的摩托车发动机维修智能体项目。当前版本已经包含手册切分、向量检索、章节 Workflow、Agent 路由、SSE 流式输出、会话历史持久化，以及独立的数据库可视化与 CRUD 管理台。
 
-## 目录结构
+## 项目结构
 
-- `motoengine/`：项目主包
-- `motoengine/func/`：核心功能模块
-- `motoengine/route/`：FastAPI 路由层
-- `data/vector_db/`：向量库持久化目录
-- `uploads/`：用户上传文件目录
-
-## 配置模块
-
-项目的基础配置主要位于 `motoengine/utils/config.py`，负责环境变量加载、路径定义和核心服务参数初始化。
-
-### 1. 基础依赖与环境加载
-
-```python
-import os
-from pathlib import Path
-
-from dotenv import load_dotenv
-
-load_dotenv()
+```text
+MotoEngine/
+├── motoengine/
+│   ├── __main__.py            # 主入口，挂载 /agent /manual /admin
+│   ├── func/                  # 核心业务逻辑
+│   │   ├── manual_splitter.py # 手册按章节切分
+│   │   ├── document_vector.py # 切分、向量化、检索
+│   │   ├── moto_rag.py        # RAG 检索
+│   │   ├── workflow.py        # 章节级工作流
+│   │   ├── moto_agent.py      # 总控 Agent
+│   │   ├── chat_storage.py    # 聊天 JSON 存储
+│   │   └── chat_memory.py     # Workflow 历史存储
+│   ├── models/                # Pydantic 数据模型
+│   ├── route/                 # API 路由
+│   │   ├── chat_router.py     # 聊天 / SSE / 会话
+│   │   └── admin_router.py    # 数据库可视化 CRUD
+│   ├── templates/             # 独立前端页面
+│   │   ├── agent/             # 智能体工作台
+│   │   ├── admin/             # 数据库管理台
+│   │   └── manual/            # 手册页面
+│   └── utils/config.py        # 路径、模型、环境变量
+├── docs/                      # 手册正文与图片资源
+├── db/                        # Chroma 与聊天历史
+└── test/                      # 模块测试入口
 ```
 
-- `os` 用于读取环境变量。
-- `Path` 用于跨平台路径拼接。
-- `load_dotenv()` 会自动读取项目中的 `.env` 文件，并将其中的键值对注入到当前进程环境中。
+## 架构图
 
-### 2. 路径配置
-
-```python
-PROJECT_ROOT = Path(__file__).parent.parent.parent
-DOCS_DIR = PROJECT_ROOT / "docs"
-DB_DIR = PROJECT_ROOT / "db"
-CHROMA_DIR = DB_DIR / "chroma"
-CHAT_HISTORY_DIR = DB_DIR / "chat_history"
-CHAPTERS_DIR = DOCS_DIR / "chapters"
+```mermaid
+flowchart LR
+  U[浏览器] --> A[/templates/agent/]
+  U --> D[/templates/admin/]
+  A --> R[/api/v2/chat]
+  D --> M[/api/v2/admin]
+  R --> AG[moto_agent.py]
+  AG --> RAG[moto_rag.py]
+  AG --> WF[workflow.py]
+  RAG --> V[document_vector.py]
+  WF --> H[chat_memory.py]
+  M --> S[chat_storage.py]
+  V --> C[(ChromaDB)]
+  S --> J[(本地 JSON)]
 ```
 
-- `PROJECT_ROOT` 会自动定位到项目根目录。
-- 使用 `/` 拼接路径比字符串拼接更安全，也更适合跨平台。
-- 这些目录会在启动时自动创建，避免第一次运行时报目录不存在的错误。
+## 功能概览
 
-### 3. 核心服务配置
+- 手册切分：`motoengine/func/manual_splitter.py`
+- 向量化检索：`motoengine/func/document_vector.py`
+- 通用问答：`motoengine/func/moto_rag.py`
+- 章节工作流：`motoengine/func/workflow.py`
+- 总控路由：`motoengine/func/moto_agent.py`
+- 聊天历史：`motoengine/func/chat_storage.py`、`motoengine/func/chat_memory.py`
+- 独立前端：
+  - `http://localhost:8000/agent/` 智能体工作台
+  - `http://localhost:8000/admin/` 数据库管理台
+  - `http://localhost:8000/manual/` 手册页面
 
-```python
-DASHSCOPE_API_KEY = os.getenv("DASHSCOPE_API_KEY")
-if not DASHSCOPE_API_KEY:
-    raise ValueError("请在 .env 文件中设置 DASHSCOPE_API_KEY")
+## 数据管理台
 
-DASHSCOPE_BASE_URL = "https://dashscope.aliyuncs.com/compatible-mode/v1"
-LLM_MODEL = "qwen-plus"
-EMBEDDING_MODEL = "text-embedding-v2"
-```
+`/admin/` 是独立页面，支持：
 
-- `DASHSCOPE_API_KEY` 从环境变量读取，如果没有配置会直接报错。
-- `DASHSCOPE_BASE_URL` 是 DashScope 的 OpenAI 兼容接口地址。
-- `LLM_MODEL` 默认使用 `qwen-plus`。
-- `EMBEDDING_MODEL` 默认使用 `text-embedding-v2`。
+- 会话列表查看
+- 新建 / 删除会话
+- 修改会话标题
+- 查看聊天记录
+- 新增 / 编辑 / 删除单条聊天
+- 查看向量库概览与手册加载状态
 
-### 4. 应用特定配置
+对应接口位于：
 
-```python
-CHROMA_COLLECTION_NAME = "motorcycle_repair_manual"
-CHROMA_PERSIST_DIRECTORY = str(CHROMA_DIR)
-MANUAL_FILE = DOCS_DIR / "摩托车发动机维修手册.md"
-```
+- `motoengine/route/admin_router.py`
+- `motoengine/func/chat_storage.py`
 
-- `CHROMA_COLLECTION_NAME` 是向量数据库中的集合名称。
-- `CHROMA_PERSIST_DIRECTORY` 指向 ChromaDB 的持久化目录。
-- `MANUAL_FILE` 指向项目使用的原始维修手册文档。
+## 主要接口
 
-## 启动
+- `GET /api-docs`
+- `GET /api/health`
+- `GET /api/v2/chat/session`
+- `GET /api/v2/chat/sessions`
+- `DELETE /api/v2/chat/session/{session_id}`
+- `POST /api/v2/chat/{session_id}/messages`
+- `GET /api/v2/chat/{session_id}/messages`
+- `GET /api/v2/chat/chapters`
+- `GET /api/v2/admin/overview`
+- `GET/POST/PUT/DELETE /api/v2/admin/sessions...`
+- `GET/POST/PUT/DELETE /api/v2/admin/sessions/{session_id}/chats...`
+
+## 启动方式
 
 ```bash
 python -m motoengine
 ```
 
-## API
+启动后可访问：
 
-- `GET /api/health`
-- `POST /api/chat`
+- `http://localhost:8000/` 首页
+- `http://localhost:8000/agent/` 智能体工作台
+- `http://localhost:8000/admin/` 数据库管理台
+- `http://localhost:8000/api-docs` API 文档
+
+## 环境说明
+
+- 需要在 `.env` 中配置 `DASHSCOPE_API_KEY`
+- 向量库与聊天历史默认落在 `db/`
+- 手册正文默认读取 `docs/摩托车发动机维修手册.md`
+
+## 本次新增
+
+- 新增独立数据库管理台 `/admin/`
+- 新增会话 / 聊天 CRUD 接口
+- 新增向量库概览信息
+- 整理首页入口，补充 `/agent/`、`/admin/`、`/manual/`

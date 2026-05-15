@@ -4,11 +4,11 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-# 加载.env文件
+# 加载 .env 文件
 load_dotenv()
 
 # 项目根目录
-PROJECT_ROOT = Path(__file__).parent.parent.parent
+PROJECT_ROOT = Path(__file__).parent.parent
 
 # 目录配置
 DOCS_DIR = PROJECT_ROOT / "docs"
@@ -24,10 +24,6 @@ CHAPTERS_DIR.mkdir(parents=True, exist_ok=True)
 
 # API配置
 DASHSCOPE_API_KEY = os.getenv("DASHSCOPE_API_KEY")
-if not DASHSCOPE_API_KEY:
-    raise ValueError("请在.env文件中设置DASHSCOPE_API_KEY")
-
-# LLM配置
 DASHSCOPE_BASE_URL = "https://dashscope.aliyuncs.com/compatible-mode/v1"
 LLM_MODEL = "qwen-plus"
 
@@ -40,3 +36,10 @@ CHROMA_PERSIST_DIRECTORY = str(CHROMA_DIR)
 
 # 文档配置
 MANUAL_FILE = DOCS_DIR / "摩托车发动机维修手册.md"
+
+
+def require_dashscope_api_key() -> str:
+    """获取必需的 DashScope API Key。"""
+    if not DASHSCOPE_API_KEY:
+        raise ValueError("请在 .env 文件中设置 DASHSCOPE_API_KEY")
+    return DASHSCOPE_API_KEY

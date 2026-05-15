@@ -1,0 +1,13 @@
+{
+  "messages": [
+    {
+      "type": "HumanMessage",
+      "content": "你好"
+    },
+    {
+      "type": "HumanMessage",
+      "content": "发动机保养"
+    }
+  ],
+  "updated_at": "2026-05-15T16:53:40.316275"
+}

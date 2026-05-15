@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MotoEngine Agent</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <div class="shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-mark">ME</div>
+          <div>
+            <div class="brand-title">MotoEngine</div>
+            <div class="brand-subtitle">维修智能体工作台</div>
+          </div>
+        </div>
+
+        <button class="primary-btn" id="newSessionBtn">新建会话</button>
+        <div class="panel">
+          <div class="panel-title">会话列表</div>
+          <div class="session-list" id="sessionList"></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title">章节快捷入口</div>
+          <div class="chapter-list" id="chapterList"></div>
+        </div>
+      </aside>
+
+      <main class="workspace">
+        <header class="topbar">
+          <div>
+            <h1>摩托车发动机维修智能体</h1>
+            <p>RAG 检索 + Workflow 分流 + SSE 流式输出</p>
+          </div>
+          <div class="status-row">
+            <span class="status-pill" id="apiStatus">API 检测中</span>
+            <a href="/api-docs" target="_blank" rel="noreferrer">Swagger</a>
+            <a href="/manual/" target="_blank" rel="noreferrer">手册</a>
+          </div>
+        </header>
+
+        <section class="hero-grid">
+          <article class="hero-card">
+            <div class="hero-label">当前会话</div>
+            <div class="hero-value" id="currentSession">-</div>
+            <div class="hero-meta" id="sessionMeta">等待创建或选择会话</div>
+          </article>
+          <article class="hero-card">
+            <div class="hero-label">最近路由</div>
+            <div class="hero-value" id="routeSource">-</div>
+            <div class="hero-meta" id="routeReason">智能体尚未响应</div>
+          </article>
+        </section>
+
+        <section class="chat-card">
+          <div class="chat-header">
+            <div>
+              <div class="panel-title">对话区</div>
+              <div class="chat-subtitle">输入通用问题会走 RAG，具体操作会自动进入 Workflow</div>
+            </div>
+            <button class="ghost-btn" id="reloadHistoryBtn">刷新历史</button>
+          </div>
+
+          <div class="messages" id="messages"></div>
+
+          <form class="composer" id="composer">
+            <textarea
+              id="questionInput"
+              rows="3"
+              placeholder="例如：摩托车发动机保养需要注意什么？ / 如何拆卸火花塞？"
+            ></textarea>
+            <div class="composer-actions">
+              <div class="composer-hint" id="composerHint">提示：先创建一个会话再发送问题。</div>
+              <button class="primary-btn" type="submit">发送问题</button>
+            </div>
+          </form>
+        </section>
+      </main>
+
+      <aside class="inspector">
+        <section class="panel">
+          <div class="panel-title">调试信息</div>
+          <div class="kv">
+            <div>source</div>
+            <div id="debugSource">-</div>
+            <div>chapter</div>
+            <div id="debugChapter">-</div>
+            <div>reasoning</div>
+            <div id="debugReason" class="debug-box">-</div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-title">快速提问</div>
+          <div class="quick-list" id="quickList"></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-title">系统状态</div>
+          <div class="system-list">
+            <div>
+              <span>后端</span>
+              <strong id="backendState">-</strong>
+            </div>
+            <div>
+              <span>会话数</span>
+              <strong id="sessionCount">0</strong>
+            </div>
+            <div>
+              <span>章节数</span>
+              <strong id="chapterCount">0</strong>
+            </div>
+          </div>
+        </section>
+      </aside>
+    </div>
+
+    <script src="./app.js"></script>
+  </body>
+</html>

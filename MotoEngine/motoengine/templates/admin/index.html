@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MotoEngine 数据管理台</title>
+    <link rel="stylesheet" href="/admin/style.css" />
+  </head>
+  <body>
+    <div class="shell">
+      <header class="topbar">
+        <div>
+          <div class="eyebrow">DATABASE CONSOLE</div>
+          <h1>数据库可视化与 CRUD 管理台</h1>
+          <p>管理本地会话、聊天记录和向量库概览，适合调试与数据巡检。</p>
+        </div>
+        <div class="topbar-actions">
+          <a href="/" class="ghost-btn">首页</a>
+          <a href="/agent/" class="ghost-btn">智能体工作台</a>
+          <button id="refreshAllBtn" class="primary-btn">刷新全部</button>
+        </div>
+      </header>
+
+      <section class="overview-grid">
+        <article class="metric">
+          <span>会话总数</span>
+          <strong id="sessionCount">0</strong>
+        </article>
+        <article class="metric">
+          <span>聊天总数</span>
+          <strong id="chatCount">0</strong>
+        </article>
+        <article class="metric">
+          <span>向量块数</span>
+          <strong id="vectorCount">0</strong>
+        </article>
+        <article class="metric">
+          <span>维修手册</span>
+          <strong id="manualState">未检测</strong>
+        </article>
+      </section>
+
+      <main class="layout">
+        <aside class="panel sidebar">
+          <div class="panel-header">
+            <div>
+              <h2>会话列表</h2>
+              <p>点击即可查看和编辑会话内容。</p>
+            </div>
+            <button id="createSessionBtn" class="primary-btn small">新建会话</button>
+          </div>
+          <label class="search">
+            <input id="sessionSearch" type="search" placeholder="搜索会话标题或 ID" />
+          </label>
+          <div id="sessionList" class="list"></div>
+        </aside>
+
+        <section class="panel main">
+          <div class="panel-header">
+            <div>
+              <h2>当前会话</h2>
+              <p id="currentSessionText">尚未选择会话</p>
+            </div>
+            <div class="row-actions">
+              <button id="loadCurrentBtn" class="ghost-btn small">加载</button>
+              <button id="deleteSessionBtn" class="danger-btn small">删除会话</button>
+            </div>
+          </div>
+
+          <div class="cards">
+            <article class="info-card">
+              <span>会话标题</span>
+              <strong id="sessionTitlePreview">-</strong>
+            </article>
+            <article class="info-card">
+              <span>更新时间</span>
+              <strong id="sessionUpdatedPreview">-</strong>
+            </article>
+            <article class="info-card">
+              <span>章节分布</span>
+              <strong id="chapterSummary">-</strong>
+            </article>
+          </div>
+
+          <div class="subpanel">
+            <div class="subpanel-header">
+              <h3>聊天记录</h3>
+              <button id="newChatBtn" class="primary-btn small">新增聊天</button>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>问题</th>
+                    <th>回答</th>
+                    <th>来源</th>
+                    <th>完成</th>
+                    <th>更新时间</th>
+                    <th>操作</th>
+                  </tr>
+                </thead>
+                <tbody id="chatTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <aside class="panel editor">
+          <div class="panel-header">
+            <div>
+              <h2>编辑器</h2>
+              <p>创建、修改或删除当前选中的会话/聊天。</p>
+            </div>
+          </div>
+
+          <section class="form-block">
+            <h3>会话编辑</h3>
+            <label>
+              <span>会话标题</span>
+              <input id="sessionTitleInput" type="text" placeholder="输入标题" />
+            </label>
+            <label>
+              <span>会话 ID</span>
+              <input id="sessionIdInput" type="text" placeholder="自动生成或指定" />
+            </label>
+            <div class="row-actions">
+              <button id="saveSessionBtn" class="primary-btn small">保存会话</button>
+              <button id="clearSessionBtn" class="ghost-btn small">清空</button>
+            </div>
+          </section>
+
+          <section class="form-block">
+            <h3>聊天编辑</h3>
+            <input id="chatIdInput" type="hidden" />
+            <label>
+              <span>问题</span>
+              <textarea id="questionInput" rows="4" placeholder="输入问题"></textarea>
+            </label>
+            <label>
+              <span>回答</span>
+              <textarea id="answerInput" rows="6" placeholder="输入回答"></textarea>
+            </label>
+            <div class="grid-2">
+              <label>
+                <span>来源</span>
+                <input id="sourceInput" type="text" placeholder="rag / workflow" />
+              </label>
+              <label>
+                <span>章节</span>
+                <input id="chapterInput" type="text" placeholder="章节名，例如：火花塞" />
+              </label>
+            </div>
+            <div class="grid-2">
+              <label>
+                <span>章节 ID</span>
+                <input id="chapterIdInput" type="text" placeholder="例如：一" />
+              </label>
+            </div>
+            <label>
+              <span>原因</span>
+              <textarea id="reasonInput" rows="3" placeholder="意图识别原因"></textarea>
+            </label>
+            <label class="inline">
+              <input id="completedInput" type="checkbox" />
+              <span>完成</span>
+            </label>
+            <div class="row-actions">
+              <button id="saveChatBtn" class="primary-btn small">保存聊天</button>
+              <button id="deleteChatBtn" class="danger-btn small">删除聊天</button>
+              <button id="resetChatBtn" class="ghost-btn small">重置</button>
+            </div>
+          </section>
+        </aside>
+      </main>
+    </div>
+
+    <script src="/admin/app.js"></script>
+  </body>
+</html>

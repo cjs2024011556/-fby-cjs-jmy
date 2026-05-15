@@ -3,9 +3,155 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>MotoEngine</title>
+    <title>MotoEngine Home</title>
+    <style>
+      :root {
+        --bg: #050816;
+        --panel: rgba(15, 23, 42, 0.92);
+        --line: rgba(148, 163, 184, 0.18);
+        --text: #e5eefb;
+        --muted: #96a4bd;
+        --accent: #38bdf8;
+        --accent-2: #f97316;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+        color: var(--text);
+        background:
+          radial-gradient(circle at top left, rgba(56, 189, 248, 0.18), transparent 28%),
+          radial-gradient(circle at top right, rgba(249, 115, 22, 0.14), transparent 28%),
+          linear-gradient(145deg, #050814 0%, #111827 48%, #0b1020 100%);
+        display: grid;
+        place-items: center;
+        padding: 24px;
+      }
+      .card {
+        width: min(980px, 100%);
+        padding: 36px;
+        border-radius: 28px;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        box-shadow: 0 30px 90px rgba(0, 0, 0, 0.42);
+      }
+      .badge {
+        display: inline-flex;
+        padding: 8px 14px;
+        border-radius: 999px;
+        background: rgba(56, 189, 248, 0.14);
+        color: #bae6fd;
+        font-size: 0.9rem;
+        letter-spacing: 0.08em;
+      }
+      h1 {
+        margin: 18px 0 12px;
+        font-size: clamp(2rem, 4vw, 3.2rem);
+      }
+      p {
+        margin: 0 0 18px;
+        color: var(--muted);
+        line-height: 1.8;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+        margin: 24px 0;
+      }
+      .panel {
+        padding: 18px;
+        border-radius: 20px;
+        background: rgba(148, 163, 184, 0.08);
+        border: 1px solid rgba(148, 163, 184, 0.16);
+      }
+      .panel strong {
+        display: block;
+        margin-bottom: 10px;
+        font-size: 1.02rem;
+      }
+      ul {
+        margin: 0;
+        padding-left: 20px;
+        line-height: 1.85;
+        color: #d2def0;
+      }
+      .links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 26px;
+      }
+      a {
+        color: #fff;
+        text-decoration: none;
+        padding: 12px 16px;
+        border-radius: 14px;
+        border: 1px solid rgba(148, 163, 184, 0.18);
+        background: rgba(148, 163, 184, 0.08);
+        transition: 0.18s ease;
+      }
+      a:hover {
+        transform: translateY(-1px);
+      }
+      a.primary {
+        background: linear-gradient(135deg, var(--accent-2), #fb923c);
+        border-color: transparent;
+      }
+      a.secondary {
+        background: linear-gradient(135deg, var(--accent), #0ea5e9);
+        color: #00111d;
+        border-color: transparent;
+      }
+      code {
+        padding: 2px 7px;
+        border-radius: 8px;
+        background: rgba(148, 163, 184, 0.14);
+      }
+      @media (max-width: 760px) {
+        .grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
   </head>
   <body>
-    <h1>MotoEngine 骨架已就绪</h1>
+    <main class="card">
+      <div class="badge">MotoEngine Workbench</div>
+      <h1>摩托车发动机维修智能体</h1>
+      <p>
+        这是一个把 <strong>维修手册切分、向量检索、章节 Workflow、SSE 流式输出、会话历史和数据库管理</strong>
+        串起来的完整项目。
+      </p>
+
+      <div class="grid">
+        <section class="panel">
+          <strong>核心能力</strong>
+          <ul>
+            <li>按章节拆分维修手册并生成向量库</li>
+            <li>RAG 统一问答和章节级 Workflow 指导</li>
+            <li>聊天历史持久化与 SSE 流式输出</li>
+            <li>独立数据库可视化页面，支持增删改查</li>
+          </ul>
+        </section>
+        <section class="panel">
+          <strong>主要目录</strong>
+          <ul>
+            <li><code>motoengine/func/</code> 核心逻辑</li>
+            <li><code>motoengine/models/</code> 数据模型</li>
+            <li><code>motoengine/route/</code> API 路由</li>
+            <li><code>motoengine/templates/</code> 前端页面</li>
+          </ul>
+        </section>
+      </div>
+
+      <div class="links">
+        <a class="primary" href="/agent/">打开智能体工作台</a>
+        <a class="secondary" href="/admin/">打开数据库管理台</a>
+        <a href="/manual/">打开手册页面</a>
+        <a href="/api-docs">查看 API 文档</a>
+      </div>
+    </main>
   </body>
 </html>

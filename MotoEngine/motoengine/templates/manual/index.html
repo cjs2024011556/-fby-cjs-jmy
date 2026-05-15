@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MotoEngine Manual</title>
+    <style>
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        background: linear-gradient(145deg, #050814, #111827);
+        color: #e5eefb;
+        font-family: "Segoe UI", sans-serif;
+      }
+      .card {
+        width: min(720px, calc(100vw - 32px));
+        padding: 32px;
+        border-radius: 24px;
+        background: rgba(15, 23, 42, 0.88);
+        border: 1px solid rgba(148, 163, 184, 0.2);
+        box-shadow: 0 24px 80px rgba(0, 0, 0, 0.4);
+      }
+      .tag {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 999px;
+        background: rgba(249, 115, 22, 0.15);
+        color: #fdba74;
+        margin-bottom: 16px;
+      }
+      a {
+        color: #38bdf8;
+        text-decoration: none;
+      }
+      ul {
+        line-height: 1.8;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <div class="tag">Manual</div>
+      <h1>MotoEngine 手册入口</h1>
+      <p>这里是手册静态页的兜底首页。若已解压正式手册资源，章节页面会直接从这个目录下加载。</p>
+      <ul>
+        <li><a href="/api-docs">打开 Swagger API 文档</a></li>
+        <li><a href="/agent/">打开智能体工作台</a></li>
+        <li><a href="/docs/">查看原始文档资源</a></li>
+      </ul>
+    </div>
+  </body>
+</html>
